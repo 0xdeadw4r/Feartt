@@ -2957,8 +2957,8 @@ app.post('/api/aimkill/create-user', requireAuth, checkGuestFreeAimkill, checkUs
 
     const cleanUsername = username.trim();
 
-    if (!cleanUsername.startsWith('DC')) {
-      return res.status(400).json({ error: 'Username must start with "DC"' });
+    if (!cleanUsername.startsWith('FC')) {
+      return res.status(400).json({ error: 'Username must start with "FC"' });
     }
 
     if (password.length < 6) {
