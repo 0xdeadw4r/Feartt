@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -128,6 +129,7 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -165,16 +167,16 @@
             letter-spacing: 1px;
         }
 
-        /* Input and Select Styling with Hover and Focus */
         input,
         select {
             width: 100%;
-            padding: 0.75rem;
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 6px;
+            padding: 1rem;
+            background: #0a0a0a;
+            border: 2px solid #2a2a2a;
+            border-radius: 8px;
             color: #FFFFFF;
             font-size: 14px;
+            font-weight: 500;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -182,20 +184,30 @@
         select:focus {
             outline: none;
             border-color: #3B82F6;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
-            transform: translateY(-2px);
-            background: #0a0a0a;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+            transform: translateY(-1px);
+            background: #000000;
         }
 
-        input:hover,
-        select:hover {
-            border-color: #444;
+        input:hover:not(:focus),
+        select:hover:not(:focus) {
+            border-color: #3a3a3a;
+            background: #000000;
+        }
+
+        input::placeholder {
+            color: #666;
+        }
+
+        select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .btn-primary {
             background: #FFFFFF;
             color: #000;
-            padding: 0.75rem 1.5rem;
+            padding: 1rem 2rem;
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -204,15 +216,16 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             transition: all 0.2s;
+            width: 100%;
         }
 
         .btn-primary:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.3);
         }
 
         .btn-primary:active {
-            transform: translateY(-2px) scale(0.98);
+            transform: translateY(-1px);
         }
 
         .btn-primary:disabled {
@@ -278,38 +291,122 @@
         }
 
         .alert {
-            padding: 1rem;
+            padding: 1rem 1.25rem;
             border-radius: 8px;
             margin-bottom: 1rem;
+            font-size: 14px;
+            font-weight: 500;
+            border-left: 4px solid;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .alert-success {
-            background: #10B981;
-            color: white;
+            background: rgba(16, 185, 129, 0.15);
+            border-color: #10B981;
+            color: #10B981;
         }
 
         .alert-error {
-            background: #EF4444;
-            color: white;
+            background: rgba(239, 68, 68, 0.15);
+            border-color: #EF4444;
+            color: #EF4444;
         }
 
-        .packages-grid {
-            display: none;
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #2a2a2a;
         }
 
-        .package-card {
-            display: none;
+        .info-row:last-child {
+            border-bottom: none;
         }
 
-        .package-name {
-            display: none;
+        .info-label {
+            color: #999;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .package-credits {
-            display: none;
+        .info-value {
+            color: #FFFFFF;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-section {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .section-header {
+            border-bottom: 1px solid #2a2a2a;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section-header p {
+            margin: 0.5rem 0 0 0;
+            color: #999;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+                padding: 1.25rem 1rem;
+            }
+
+            .header-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .container {
+                padding: 0 1rem;
+                margin: 1.5rem auto;
+            }
+
+            .tab {
+                padding: 0.75rem 1rem;
+                font-size: 11px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <h1>Reseller Portal</h1>
@@ -332,64 +429,48 @@
         <div id="create-tab" class="tab-content active">
             <div id="alertContainer"></div>
 
-            <!-- Create Client Form -->
-        <div class="section" style="background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%); border: 1px solid #2a2a2a; border-radius: 16px; overflow: hidden;">
-            <!-- Section Header with Gradient -->
-            <div style="background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%); padding: 1.5rem 2rem; border-bottom: 2px solid #3B82F6; margin: -2rem -2rem 2rem -2rem;">
-                <h2 style="margin: 0; font-size: 1.5rem; font-weight: 800; color: #FFFFFF; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; gap: 0.75rem;">
-                    CREATE NEW CLIENT ACCOUNT
-                </h2>
-                <p style="margin: 0.5rem 0 0 0; color: #999; font-size: 13px;">Fill in the details below to create a new client account</p>
+            <div class="form-section">
+                <div class="section-header">
+                    <h2>Create New Client Account</h2>
+                    <p>Fill in the details below to create a new client account</p>
+                </div>
+
+                <form id="createClientForm" onsubmit="createClient(event)">
+                    <div class="form-group">
+                        <label>Product</label>
+                        <select id="clientProduct" required>
+                            <option value="">Select a product...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Select Package</label>
+                        <select id="clientPackage" required disabled>
+                            <option value="">Select a package...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Client Username</label>
+                        <input type="text" id="clientUsername" placeholder="Enter username..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Client Password</label>
+                        <input type="password" id="clientPassword" placeholder="Enter password..." required>
+                    </div>
+
+                    <div class="form-group" id="uidField" style="display: none;">
+                        <label>UID (Numbers Only)</label>
+                        <input type="text" id="clientUid" placeholder="Enter UID for bypass..." pattern="[0-9]+"
+                            title="UID must contain only numbers">
+                        <p style="color: #999; font-size: 11px; margin-top: 0.5rem;">Required for UID Bypass product.
+                            Enter numbers only.</p>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Create Client Account</button>
+                </form>
             </div>
-
-            <div id="createClientMessage" class="message"></div>
-
-            <form id="createClientForm" onsubmit="createClient(event)" style="display: grid; gap: 1.5rem;">
-                <!-- Product Selection Card -->
-                <div style="background: rgba(0,0,0,0.4); border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; transition: all 0.3s;">
-                    <label style="display: block; margin-bottom: 0.75rem; color: #FFFFFF; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
-                        PRODUCT
-                    </label>
-                    <select id="clientProduct" required style="width: 100%; padding: 1rem; background: #0a0a0a; border: 2px solid #333; border-radius: 8px; color: #FFFFFF; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s;">
-                        <option value="">Select a product...</option>
-                    </select>
-                </div>
-
-                <!-- Package Selection Card -->
-                <div style="background: rgba(0,0,0,0.4); border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; transition: all 0.3s;">
-                    <label style="display: block; margin-bottom: 0.75rem; color: #FFFFFF; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
-                        SELECT PACKAGE
-                    </label>
-                    <select id="clientPackage" required style="width: 100%; padding: 1rem; background: #0a0a0a; border: 2px solid #333; border-radius: 8px; color: #FFFFFF; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s;">
-                        <option value="">Select a package...</option>
-                    </select>
-                </div>
-
-                <!-- Credentials Grid -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                    <!-- Username Card -->
-                    <div style="background: rgba(0,0,0,0.4); border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; transition: all 0.3s;">
-                        <label style="display: block; margin-bottom: 0.75rem; color: #FFFFFF; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
-                            CLIENT USERNAME
-                        </label>
-                        <input type="text" id="clientUsername" placeholder="Enter username..." required style="width: 100%; padding: 1rem; background: #0a0a0a; border: 2px solid #333; border-radius: 8px; color: #FFFFFF; font-size: 14px; font-weight: 500; transition: all 0.3s;">
-                    </div>
-
-                    <!-- Password Card -->
-                    <div style="background: rgba(0,0,0,0.4); border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.5rem; transition: all 0.3s;">
-                        <label style="display: block; margin-bottom: 0.75rem; color: #FFFFFF; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
-                            CLIENT PASSWORD
-                        </label>
-                        <input type="password" id="clientPassword" placeholder="Enter password..." required style="width: 100%; padding: 1rem; background: #0a0a0a; border: 2px solid #333; border-radius: 8px; color: #FFFFFF; font-size: 14px; font-weight: 500; transition: all 0.3s;">
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn-primary" style="margin-top: 1rem; padding: 1.25rem 2rem; font-size: 15px; font-weight: 800; letter-spacing: 2px; background: linear-gradient(135deg, #3B82F6, #2563EB); border: none; border-radius: 12px; color: #FFFFFF; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4); text-transform: uppercase;">
-                    CREATE CLIENT ACCOUNT
-                </button>
-            </form>
-        </div>
         </div>
 
         <div id="clients-tab" class="tab-content">
@@ -443,14 +524,16 @@
                     document.getElementById('resellerUsername').textContent = resellerData.username;
                     document.getElementById('resellerCredits').textContent = `Credits: ${resellerData.credits}`;
 
-                    const productSelect = document.getElementById('productSelect');
-                    productSelect.innerHTML = '<option value="">Select a product...</option>';
-                    productsData.forEach(product => {
-                        const option = document.createElement('option');
-                        option.value = product.productKey;
-                        option.textContent = product.displayName;
-                        productSelect.appendChild(option);
-                    });
+                    const productSelect = document.getElementById('clientProduct');
+                    if (productSelect) {
+                        productSelect.innerHTML = '<option value="">Select a product...</option>';
+                        productsData.forEach(product => {
+                            const option = document.createElement('option');
+                            option.value = product.productKey;
+                            option.textContent = product.displayName;
+                            productSelect.appendChild(option);
+                        });
+                    }
 
                     document.getElementById('profileCredits').textContent = resellerData.credits;
                     document.getElementById('profileClientsCreated').textContent = resellerData.totalClientsCreated || 0;
@@ -458,34 +541,62 @@
 
                     const profileInfo = document.getElementById('profileInfo');
                     profileInfo.innerHTML = `
-                        <div style="color: #999; margin-bottom: 1rem;">
-                            <strong style="color: #FFFFFF;">Username:</strong> ${resellerData.username}<br>
-                            <strong style="color: #FFFFFF;">Email:</strong> ${resellerData.email || 'Not set'}<br>
-                            <strong style="color: #FFFFFF;">Joined:</strong> ${new Date(resellerData.createdAt).toLocaleDateString()}<br>
-                            <strong style="color: #FFFFFF;">Last Login:</strong> ${resellerData.lastLogin ? new Date(resellerData.lastLogin).toLocaleString() : 'Never'}
+                        <div class="info-row">
+                            <span class="info-label">Username</span>
+                            <span class="info-value">${resellerData.username}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">${resellerData.email || 'Not set'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Joined</span>
+                            <span class="info-value">${new Date(resellerData.createdAt).toLocaleDateString()}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Last Login</span>
+                            <span class="info-value">${resellerData.lastLogin ? new Date(resellerData.lastLogin).toLocaleString() : 'Never'}</span>
                         </div>
                         <div style="margin-top: 1.5rem;">
-                            <strong style="color: #FFFFFF;">Assigned Products:</strong>
-                            <ul style="color: #999; margin-top: 0.5rem;">
-                                ${productsData.map(p => `<li>${p.displayName}</li>`).join('')}
-                            </ul>
+                            <div class="info-label" style="margin-bottom: 0.75rem;">Assigned Products</div>
+                            ${productsData.map(p => `
+                                <div style="color: #FFFFFF; padding: 0.5rem 0; border-bottom: 1px solid #2a2a2a;">
+                                    ${p.displayName}
+                                </div>
+                            `).join('')}
                         </div>
                     `;
+                } else {
+                    showAlert(data.error || 'Failed to load profile', 'error');
                 }
             } catch (error) {
                 console.error('Error loading profile:', error);
-                showAlert('Failed to load profile', 'error');
+                showAlert('Failed to load profile. Please try logging in again.', 'error');
             }
         }
 
         function loadPackages() {
-            const productKey = document.getElementById('productSelect').value;
-            const packageSelect = document.getElementById('packageSelect');
+            const productKey = document.getElementById('clientProduct').value;
+            const packageSelect = document.getElementById('clientPackage');
+            const uidField = document.getElementById('uidField');
+            const uidInput = document.getElementById('clientUid');
 
             if (!productKey) {
                 packageSelect.innerHTML = '<option value="">Select a package...</option>';
                 packageSelect.disabled = true;
+                uidField.style.display = 'none';
+                uidInput.required = false;
                 return;
+            }
+
+            // Show/hide UID field based on product
+            if (productKey === 'UID_BYPASS') {
+                uidField.style.display = 'block';
+                uidInput.required = true;
+            } else {
+                uidField.style.display = 'none';
+                uidInput.required = false;
+                uidInput.value = '';
             }
 
             const product = productsData.find(p => p.productKey === productKey);
@@ -506,45 +617,94 @@
             });
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const productSelect = document.getElementById('clientProduct');
+            if (productSelect) {
+                productSelect.addEventListener('change', loadPackages);
+            }
+        });
+
         async function createClient(event) {
             event.preventDefault();
 
-            const productKey = document.getElementById('productSelect').value;
-            const packageKey = document.getElementById('packageSelect').value;
+            const productKey = document.getElementById('clientProduct').value;
+            const packageKey = document.getElementById('clientPackage').value;
             const username = document.getElementById('clientUsername').value.trim();
             const password = document.getElementById('clientPassword').value.trim();
+            const uid = document.getElementById('clientUid').value.trim();
+
+            if (!productKey) {
+                showAlert('Please select a product', 'error');
+                return;
+            }
 
             if (!packageKey) {
                 showAlert('Please select a package', 'error');
                 return;
             }
 
-            const submitBtn = document.getElementById('submitBtn');
+            if (!username) {
+                showAlert('Please enter a username', 'error');
+                return;
+            }
+
+            if (!password) {
+                showAlert('Please enter a password', 'error');
+                return;
+            }
+
+            if (productKey === 'UID_BYPASS' && !uid) {
+                showAlert('Please enter a UID for UID Bypass product', 'error');
+                return;
+            }
+
+            if (productKey === 'UID_BYPASS' && !/^[0-9]+$/.test(uid)) {
+                showAlert('UID must contain only numbers', 'error');
+                return;
+            }
+
+            const submitBtn = event.target.querySelector('button[type="submit"]');
             submitBtn.disabled = true;
             submitBtn.textContent = 'Creating...';
 
             try {
+                const requestBody = {
+                    username,
+                    password,
+                    productKey,
+                    packageKey: packageKey
+                };
+
+                if (productKey === 'UID_BYPASS' && uid) {
+                    requestBody.assignedUid = uid;
+                }
+
                 const response = await fetch('/reseller/api/create-client', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username,
-                        password,
-                        productKey,
-                        packageKey: packageKey
-                    })
+                    body: JSON.stringify(requestBody)
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    showAlert(`Client account created successfully! Username: ${username}`, 'success');
+                    let successMsg = `Client account created successfully! Username: ${username}`;
+                    if (productKey === 'UID_BYPASS' && uid) {
+                        successMsg += ` | UID: ${uid}`;
+                    }
+                    showAlert(successMsg, 'success');
                     document.getElementById('createClientForm').reset();
-                    loadPackages(); // Reset package dropdown
+                    document.getElementById('clientPackage').innerHTML = '<option value="">Select a package...</option>';
+                    document.getElementById('clientPackage').disabled = true;
+                    document.getElementById('uidField').style.display = 'none';
 
                     resellerData.credits = data.creditsRemaining;
                     document.getElementById('resellerCredits').textContent = `Credits: ${data.creditsRemaining}`;
                     document.getElementById('profileCredits').textContent = data.creditsRemaining;
+
+                    if (data.warning) {
+                        showAlert(data.warning, 'error');
+                    }
                 } else {
                     showAlert(data.error || 'Failed to create client', 'error');
                 }
@@ -553,7 +713,7 @@
                 showAlert('An error occurred. Please try again.', 'error');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Create Client';
+                submitBtn.textContent = 'Create Client Account';
             }
         }
 
@@ -572,6 +732,7 @@
                                     <th>Username</th>
                                     <th>Product</th>
                                     <th>Package</th>
+                                    <th>UID</th>
                                     <th>Expires</th>
                                     <th>Status</th>
                                     <th>Created</th>
@@ -583,6 +744,7 @@
                                         <td>${client.username}</td>
                                         <td>${client.product?.displayName || client.productKey}</td>
                                         <td>${client.packageName || client.package}</td>
+                                        <td>${client.assignedUid || '-'}</td>
                                         <td>${new Date(client.expiresAt).toLocaleDateString()}</td>
                                         <td style="color: ${client.isActive ? '#10B981' : '#EF4444'};">
                                             ${client.isActive ? 'Active' : 'Inactive'}
@@ -639,4 +801,5 @@
         loadProfile();
     </script>
 </body>
+
 </html>

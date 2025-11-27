@@ -122,7 +122,7 @@ router.post('/api/logout', isReseller, async (req, res) => {
 router.get('/api/profile', isReseller, async (req, res) => {
     try {
         const reseller = await Reseller.findById(req.session.resellerId).select('-password');
-        
+
         if (!reseller) {
             return res.status(404).json({ error: 'Reseller not found' });
         }
@@ -154,7 +154,7 @@ router.get('/api/profile', isReseller, async (req, res) => {
 
 router.post('/api/create-client', isReseller, async (req, res) => {
     try {
-        const { username, password, productKey, packageKey } = req.body;
+        const { username, password, productKey, packageKey, assignedUid } = req.body;
 
         if (!username || !password || !productKey || !packageKey) {
             return res.status(400).json({ error: 'All fields are required' });
@@ -183,14 +183,25 @@ router.post('/api/create-client', isReseller, async (req, res) => {
         }
 
         if (reseller.credits < packageData.credits) {
-            return res.status(400).json({ 
-                error: `Insufficient credits. Required: ${packageData.credits}, Available: ${reseller.credits}` 
+            return res.status(400).json({
+                error: `Insufficient credits. Required: ${packageData.credits}, Available: ${reseller.credits}`
             });
         }
 
         const existingClient = await Client.findOne({ username: username.toLowerCase() });
         if (existingClient) {
             return res.status(400).json({ error: 'Username already exists' });
+        }
+
+        // Validate UID for UID_BYPASS product
+        if (productKey === 'UID_BYPASS' && assignedUid) {
+            if (!/^[0-9]+$/.test(assignedUid)) {
+                return res.status(400).json({ error: 'UID must contain only numbers' });
+            }
+            const existingUID = await UID.findOne({ uid: assignedUid });
+            if (existingUID) {
+                return res.status(400).json({ error: 'UID already exists' });
+            }
         }
 
         let genzAuthCreated = false;
@@ -201,10 +212,10 @@ router.post('/api/create-client', isReseller, async (req, res) => {
         if (productKey === 'AIMKILL') {
             try {
                 const duration = packageData.days || 1;
-                
+
                 // Get seller key: reseller-specific > product-specific > global
-                let sellerKey = reseller.genzauthSellerKey && reseller.genzauthSellerKey.trim() 
-                    ? reseller.genzauthSellerKey.trim() 
+                let sellerKey = reseller.genzauthSellerKey && reseller.genzauthSellerKey.trim()
+                    ? reseller.genzauthSellerKey.trim()
                     : null;
 
                 console.log(`   Checking reseller seller key: ${sellerKey ? '✅ Found' : '❌ Not found'}`);
@@ -259,12 +270,34 @@ router.post('/api/create-client', isReseller, async (req, res) => {
             password: password,
             productKey: productKey,
             assignedUsername: assignedUsername,
+            assignedUid: assignedUid || null,
             package: packageKey,
             packageName: packageData.display,
             expiresAt: expiresAt,
             createdBy: `reseller:${reseller.username}`,
             isActive: true
         });
+
+        // Create UID if this is a UID_BYPASS product and UID is provided
+        let uidCreated = false;
+        let uidError = null;
+        if (productKey === 'UID_BYPASS' && assignedUid) {
+            try {
+                const uidExpiresAt = new Date(expiresAt);
+                const newUID = await UID.create({
+                    uid: assignedUid,
+                    createdBy: `reseller:${reseller.username}`,
+                    expiresAt: uidExpiresAt,
+                    duration: `${packageData.days || 1}day${packageData.days !== 1 ? 's' : ''}`,
+                    status: 'active'
+                });
+                uidCreated = true;
+                console.log(`✅ UID created for client: ${assignedUid}`);
+            } catch (error) {
+                console.error('❌ UID creation failed:', error);
+                uidError = error.message;
+            }
+        }
 
         reseller.credits -= packageData.credits;
         reseller.totalClientsCreated += 1;
@@ -280,14 +313,20 @@ router.post('/api/create-client', isReseller, async (req, res) => {
                 username: newClient.username,
                 productKey: newClient.productKey,
                 package: newClient.packageName,
-                expiresAt: newClient.expiresAt
+                expiresAt: newClient.expiresAt,
+                assignedUid: assignedUid || null
             },
             creditsRemaining: reseller.credits,
-            genzAuthCreated
+            genzAuthCreated,
+            uidCreated
         };
 
         if (genzAuthError) {
             response.warning = `Client created but GenzAuth account failed: ${genzAuthError}`;
+        }
+
+        if (uidError && productKey === 'UID_BYPASS') {
+            response.warning = (response.warning ? response.warning + ' | ' : '') + `UID creation failed: ${uidError}`;
         }
 
         res.json(response);
