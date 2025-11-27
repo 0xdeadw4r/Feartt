@@ -148,8 +148,8 @@ router.post('/api/login', async (req, res) => {
             console.log('   Client Username:', req.session.clientUsername);
             console.log('   isClient flag:', req.session.isClient);
 
-            res.json({ 
-                success: true, 
+            res.json({
+                success: true,
                 message: 'Login successful',
                 username: client.username,
                 redirectUrl: '/client/dashboard'
@@ -194,7 +194,7 @@ router.get('/api/chat/history', isClient, async (req, res) => {
                 { senderUsername: withUser, receiverUsername: currentUser }
             ]
         }).sort({ timestamp: -1 }).limit(50).exec();
-        
+
         // Reverse to show oldest first
         messages.reverse();
 
@@ -404,8 +404,8 @@ router.post('/api/reset-hwid', isClient, async (req, res) => {
 
         // Check if client has assigned username for HWID reset
         if (!client.assignedUsername) {
-            return res.status(400).json({ 
-                error: 'No GenzAuth username assigned. Please contact administrator to set up your account.' 
+            return res.status(400).json({
+                error: 'No GenzAuth username assigned. Please contact administrator to set up your account.'
             });
         }
 
@@ -417,7 +417,7 @@ router.post('/api/reset-hwid', isClient, async (req, res) => {
 
         if (currentResetCount >= maxFreeResets) {
             const priceMsg = resetPrice > 0 ? ` for $${resetPrice}` : '';
-            return res.status(403).json({ 
+            return res.status(403).json({
                 error: `You have used all ${maxFreeResets} free HWID resets. Please contact the administrator${priceMsg} to reset your HWID.`,
                 limitReached: true,
                 resetPrice: resetPrice
@@ -427,8 +427,8 @@ router.post('/api/reset-hwid', isClient, async (req, res) => {
         // Perform HWID reset via GenzAuth
         // Priority: Product-specific seller key > Global seller key
         try {
-            const productSellerKey = product.genzauthSellerKey && product.genzauthSellerKey.trim() 
-                ? product.genzauthSellerKey.trim() 
+            const productSellerKey = product.genzauthSellerKey && product.genzauthSellerKey.trim()
+                ? product.genzauthSellerKey.trim()
                 : null;
 
             // Get global seller key from ApiConfig as fallback
@@ -446,7 +446,7 @@ router.post('/api/reset-hwid', isClient, async (req, res) => {
             // Check if we have any seller key configured
             if (!sellerKeyToUse) {
                 console.error(`❌ GenzAuth not configured - no seller key available`);
-                return res.status(503).json({ 
+                return res.status(503).json({
                     error: 'GenzAuth API is not configured. Please contact the administrator to configure the seller key in Product Settings.',
                     configurationError: true
                 });
@@ -458,7 +458,7 @@ router.post('/api/reset-hwid', isClient, async (req, res) => {
             // Handle TEST mode
             if (result.isTestMode) {
                 console.error(`❌ GenzAuth in TEST mode - seller key not configured properly`);
-                return res.status(503).json({ 
+                return res.status(503).json({
                     error: 'GenzAuth API is in TEST mode. Please contact administrator to configure the seller key.',
                     configurationError: true
                 });
@@ -468,7 +468,7 @@ router.post('/api/reset-hwid', isClient, async (req, res) => {
             if (!result.success) {
                 const errorMsg = result.error || result.message || 'Unknown error';
                 console.error(`❌ HWID reset failed: ${errorMsg}`);
-                return res.status(500).json({ 
+                return res.status(500).json({
                     error: `Failed to reset HWID: ${errorMsg}`,
                     apiError: true
                 });
@@ -477,9 +477,9 @@ router.post('/api/reset-hwid', isClient, async (req, res) => {
             console.log(`✅ HWID reset successful for: ${client.assignedUsername}`);
         } catch (error) {
             console.error('❌ GenzAuth HWID reset error:', error);
-            return res.status(500).json({ 
+            return res.status(500).json({
                 error: 'Failed to reset HWID. Please try again or contact administrator.',
-                technicalError: error.message 
+                technicalError: error.message
             });
         }
 
@@ -541,7 +541,7 @@ router.get('/admin/clients', isAdminOrOwner, async (req, res) => {
 // Admin: Create client
 router.post('/admin/clients', isAdminOrOwner, async (req, res) => {
     try {
-        const { 
+        const {
             username, password, productKey, assignedUsername, assignedUid, notes, customDownloadLink,
             createGenzAuthAccount, genzAuthUsername, genzAuthPassword, genzAuthDuration
         } = req.body;
@@ -592,8 +592,8 @@ router.post('/admin/clients', isAdminOrOwner, async (req, res) => {
                 console.log(`   Product: ${product.displayName} (${productKey})`);
 
                 // Use product-specific seller key if available
-                const productSellerKey = product.genzauthSellerKey && product.genzauthSellerKey.trim() 
-                    ? product.genzauthSellerKey.trim() 
+                const productSellerKey = product.genzauthSellerKey && product.genzauthSellerKey.trim()
+                    ? product.genzauthSellerKey.trim()
                     : null;
 
                 if (productSellerKey) {
@@ -1064,9 +1064,9 @@ router.get('/api/genzauth-expiration', isClient, async (req, res) => {
 
     } catch (error) {
         console.error('Get GenzAuth expiration error:', error);
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
-            error: 'Failed to fetch account expiration info' 
+            error: 'Failed to fetch account expiration info'
         });
     }
 });
@@ -1117,8 +1117,8 @@ router.post('/admin/bulk-reset-hwid-count', isAdminOrOwner, async (req, res) => 
 
         const result = await Client.updateMany(
             { _id: { $in: clientIds } },
-            { 
-                $set: { 
+            {
+                $set: {
                     hwidResetCount: 0,
                     lastHwidReset: null
                 }
